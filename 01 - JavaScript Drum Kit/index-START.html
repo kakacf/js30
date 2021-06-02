@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JS Drum Kit</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+    <div class="keys">
+        <div data-key="65" class="key">
+            <kbd>A</kbd>
+            <span class="sound">clap</span>
+        </div>
+        <div data-key="83" class="key">
+            <kbd>S</kbd>
+            <span class="sound">hihat</span>
+        </div>
+        <div data-key="68" class="key">
+            <kbd>D</kbd>
+            <span class="sound">kick</span>
+        </div>
+        <div data-key="70" class="key">
+            <kbd>F</kbd>
+            <span class="sound">openhat</span>
+        </div>
+        <div data-key="71" class="key">
+            <kbd>G</kbd>
+            <span class="sound">boom</span>
+        </div>
+        <div data-key="72" class="key">
+            <kbd>H</kbd>
+            <span class="sound">ride</span>
+        </div>
+        <div data-key="74" class="key">
+            <kbd>J</kbd>
+            <span class="sound">snare</span>
+        </div>
+        <div data-key="75" class="key">
+            <kbd>K</kbd>
+            <span class="sound">tom</span>
+        </div>
+        <div data-key="76" class="key">
+            <kbd>L</kbd>
+            <span class="sound">tink</span>
+        </div>
+    </div>
+
+    <audio data-key="65" src="sounds/clap.wav"></audio>
+    <audio data-key="83" src="sounds/hihat.wav"></audio>
+    <audio data-key="68" src="sounds/kick.wav"></audio>
+    <audio data-key="70" src="sounds/openhat.wav"></audio>
+    <audio data-key="71" src="sounds/boom.wav"></audio>
+    <audio data-key="72" src="sounds/ride.wav"></audio>
+    <audio data-key="74" src="sounds/snare.wav"></audio>
+    <audio data-key="75" src="sounds/tom.wav"></audio>
+    <audio data-key="76" src="sounds/tink.wav"></audio>
+
+    <script>
+        
+        function playSound (event) {
+            // console.log('keydown :>> ', event);
+            const audio = document.querySelector(`audio[data-key="${event.keyCode}"]`);
+            const keyElement = document.querySelector(`.key[data-key="${event.keyCode}"]`);
+            console.log('keyElement :>> ', keyElement);
+
+            if (!audio) {
+                return;
+            }
+            audio.currentTime = 0; // rewind to the start 回到聲音初始位置，不會導致聲音太長來不及反應第二次點擊的音效
+            audio.play();
+
+            keyElement.classList.add('playing')
+
+        }
+
+        function removeTransition(event) {
+            // console.log('removeTransition :>> ', event);
+            if (event.propertyName !== 'transform') {
+                return;
+            }
+            // 當transform 出來（也就是 transition 結束，transitionend 被觸發時），把 .playing 這個 class 移除。
+            this.classList.remove('playing');
+        }
+
+        // 按鍵開始打鼓
+        window.addEventListener('keydown', playSound);
+        // 監聽所有 transitionend event，一旦偵測到這個動畫效果（transition）已經結束，那麼我們就可以把原本添加的 .playing 這個 class 拿掉。
+        const keys = document.querySelectorAll('.key');
+        keys.forEach((key) => {
+            key.addEventListener('transitionend', removeTransition)
+        });
+        
+
+    </script>
+
+
+</body>
+
+</html>
