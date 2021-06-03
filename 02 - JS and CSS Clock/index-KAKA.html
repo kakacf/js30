@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JS + CSS Clock</title>
+</head>
+
+<body>
+
+    <div class="clock">
+        <div class="clock-face">
+            <div class="hand hour-hand"></div>
+            <div class="hand min-hand"></div>
+            <div class="hand second-hand"></div>
+            <div class="clock-center"></div>
+        </div>
+    </div>
+
+
+    <style>
+        html {
+            background: url(http://images.contentful.com/e43mbx7oxv8s/dTeQVZbR72uiYkEAYKyUS/bd3825a93aace2c7b368a7a742b1000f/000122_ZV_SCSW_HeroImages_1900x1024_D1.jpg);
+            background-size: cover;
+            font-family: 'helvetica neue';
+            text-align: center;
+            font-size: 10px;
+        }
+
+        body {
+            margin: 0;
+            font-size: 2rem;
+            display: flex;
+            flex: 1;
+            min-height: 100vh;
+            align-items: center;
+        }
+
+        .clock {
+            width: 40rem;
+            height: 40rem;
+            border: 20px solid #19376A;
+            border-radius: 50%;
+            margin: 50px auto;
+            position: relative;
+            padding: 2rem;
+            box-shadow:
+                0 0 0 4px rgba(0, 0, 0, 0.1),
+                inset 0 0 0 3px #EFEFEF,
+                inset 0 0 10px black,
+                0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .clock-face {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform: translateY(-3px);
+            /* account for the height of the clock hands -> 校正 height: 6px;*/
+        }
+
+        .clock-center {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #19376A;
+            margin: 0px auto;
+            top: 50%;
+            transform: translateY(-5px); /* 校正中心點位置 */
+            box-shadow: 0 0 3px 4px #a6c4f8;
+        }
+
+        .hand {
+            width: 50%;
+            height: 6px;
+            /* background: black; */
+            position: absolute;
+            top: 50%;
+            transform-origin: 100%;
+            /* transform 旋轉基礎點 */
+            transform: rotate(90deg);
+            /* transition: cssProperty  duration  timing-function  delay; */
+            transition: all 0.05s;
+            transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1); /* 模擬秒針會往回稍微彈跳的動作 */
+        }
+
+        .second-hand {
+            background: #94DAF0;
+        }
+
+        .min-hand {
+            background: #F6D55D;
+            
+        }
+
+        .hour-hand {
+            background: #E8487F;
+            width: 40%;
+            left: 10%;
+        }
+
+    </style>
+
+    <script>
+
+        const secondHand = document.querySelector('.second-hand');
+        const minHand = document.querySelector('.min-hand');
+        const hourHand = document.querySelector('.hour-hand');
+
+        function setDate() {
+            const now = new Date();
+            // 秒
+            const seconds = now.getSeconds();
+            const secondsDegrees = ((seconds / 60) * 360) + 90; // 校正回歸：初始度數為 90
+            secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+            // 分
+            const mins = now.getMinutes();
+            const minsDegrees = ((mins / 60) * 360) + 90;
+            minHand.style.transform = `rotate(${minsDegrees}deg)`;
+
+            // 時
+            const hours = now.getHours();
+            const hoursDegrees = ((hours / 12) * 360) + 90;
+            hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+
+            // 秒針回到原始位置由 444(354)度 -> 90(0)度時 會因為 transition 而繞一圈回起點，故在 90度的時候取消 transition 即可
+            if (secondsDegrees === 90) {
+                secondHand.style.transition = 'all 0s';
+            } else {
+                secondHand.style.transition = 'all 0.05s';
+            }
+
+            // console.log('now :>> ', now);
+            // console.log('seconds :>> ', seconds);
+            // console.log('mins :>> ', mins);
+            // console.log('hours :>> ', hours);
+                
+        }
+
+        setInterval(setDate, 1000);
+
+
+    </script>
+</body>
+
+</html>
