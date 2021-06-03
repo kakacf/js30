@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scoped CSS Variables and JS</title>
+</head>
+
+<body>
+    <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+
+    <div class="controls">
+        <label for="spacing">Spacing:</label>
+        <input id="spacing" type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
+
+        <label for="blur">Blur:</label>
+        <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
+
+        <label for="base">Base Color</label>
+        <input id="base" type="color" name="base" value="#ffc600">
+    </div>
+
+    <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
+
+    <style>
+        /*
+            CSS Variables：宣告變數都放在 ":root" 選取器內，並且使用 "--自訂名稱" 作為屬性的方式來宣告變數，取用時 var(--自訂名稱)
+            :root -> document 中的根元素
+        */
+        :root {
+            --base: #ffc600;
+            --spacing: 10px;
+            --blur: 10px;
+        }
+
+        img {
+            padding: var(--spacing);
+            background: var(--base);
+            filter: blur(var(--blur));
+        }
+
+        .hl {
+            color: var(--base);
+        }
+
+        body {
+            text-align: center;
+            background: #193549;
+            color: white;
+            font-family: 'helvetica neue', sans-serif;
+            font-weight: 100;
+            font-size: 50px;
+        }
+
+        .controls {
+            margin-bottom: 50px;
+        }
+
+        input {
+            width: 100px;
+        }
+    </style>
+
+    <script>
+
+        // NodeList 不等同於一般 JS Array，他僅有部分 Array 的 function
+        // NodeList to Array https://www.jstips.co/zh_tw/javascript/converting-a-node-list-to-an-array/
+        const inputs = document.querySelectorAll('.controls input');
+        console.log('inputs :>> ', inputs);
+
+        function handleUpdate() {
+            console.log('update!!!');
+            // dataset: HTMLElement.dataset 設置在元件上的自定義資料屬性(data-*)。
+            const suffix = this.dataset.sizing || '';
+            // Document.documentElement 會回傳目前文件（document）中的根元素（Element）
+            // this.name -> input 裡的 "name" property
+            document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix)
+
+        }
+
+        inputs.forEach((input) => {
+            // input.addEventListener('change', handleUpdate);
+            input.addEventListener('mousemove', handleUpdate);
+        })
+
+
+
+    </script>
+
+</body>
+
+</html>
